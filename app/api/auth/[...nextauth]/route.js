@@ -5,6 +5,9 @@ import User from "@models/user";
 
 
 const handler = NextAuth({
+    session: {
+        strategy: "jwt",
+    },
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_ID,
@@ -32,7 +35,7 @@ const handler = NextAuth({
                 if (!userExists) {
                     await User.create({
                         email: profile.email,
-                        username: profile.name.replace(" ", "").toLoweCase(),
+                        username: profile.name.replace(" ", "").toLowerCase(),
                         image: profile.picture,
                     })
                 }
