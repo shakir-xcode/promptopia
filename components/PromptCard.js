@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 
 
-const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
+const PromptCard = ({ post, handleTagClick, handleProfileClick, handleDelete }) => {
     const [copied, setCopied] = useState("");
     const { data: session } = useSession();
     const pathName = usePathname();
@@ -18,10 +18,19 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
         setTimeout(() => { setCopied("") }, 3000)
     }
 
+    const handleEdit = () => {
+        router.push(`/update-prompt?id=${post._id}`);
+    }
+
     return (
         <div className="prompt_card">
             <div className="flex justify-between items-start gap-5">
-                <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
+                <div
+                    className="flex-1 flex justify-start items-center gap-3 cursor-pointer"
+                    onClick={() => {
+                        handleProfileClick(post.creator.username)
+                    }}
+                >
                     <Image
                         src={post.creator.image}
                         alt="user_image"
@@ -56,7 +65,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
                 onClick={() => {
                     handleTagClick && handleTagClick(post.tag)
                 }}
-            >{post.tag}</p>
+            >#{post.tag}</p>
 
             {session?.user.id === post.creator._id &&
                 pathName === '/profile' && (
@@ -66,7 +75,7 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
                         >Edit</p>
 
                         <p className="font-inter text-sm orange_gradient cursor-pointer"
-                            onClick={handleDelete}
+                            onClick={() => handleDelete(post)}
                         >Delete</p>
                     </div>
                 )}
